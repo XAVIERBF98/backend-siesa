@@ -1,32 +1,33 @@
 var express = require('express');
-var bcrypt = require('bcrypt');
 
 var mdAutenticacion = require('../middlewares/autenticacion');
 
 var app = express();
-var Usuario = require('../models/usuario');
+var Profesor = require('../models/profesor');
 /// ===========================================
-// Inicio Obtener Todos los Usuarios
+// Inicio Obtener Todos los Profesors
 //==================================
 app.get('/', (req, res, next) => {
     var desde = req.query.desde || 0;
     desde = Number(desde);
-    Usuario.find({}, 'nombre email img role')
+    Profesor.find({})
         .skip(desde)
         .limit(5)
-        .exec((err, usuarios) => {
+        .populate('usuario', 'nombre email')
+        .populate('curso')
+        .exec((err, profesors) => {
 
             if (err) {
                 return res.status(500).json({
                     ok: false,
-                    mensaje: 'Error Carganfo Usuarios',
+                    mensaje: 'Error Cargando Profesors',
                     errors: err
                 });
             }
-            Usuario.count({}, (err, conteo) => {
+            Profesor.count({}, (err, conteo) => {
                 res.status(200).json({
                     ok: true,
-                    usuarios: usuarios,
+                    profesors: profesors,
                     total: conteo
                 });
             });
@@ -40,39 +41,39 @@ app.put('/:id', mdAutenticacion.verificaToken, (req, res) => {
     var id = req.params.id;
     var body = req.body;
 
-    Usuario.findById(id, (err, usuario) => {
+    Profesor.findById(id, (err, profesor) => {
 
         if (err) {
             return res.status(500).json({
                 ok: false,
-                mensaje: 'Error al Buscar usuario',
+                mensaje: 'Error al Buscar profesor',
                 errors: err
             });
         }
-        if (!usuario) {
+        if (!profesor) {
             return res.status(400).json({
                 ok: false,
-                mensaje: 'El usuario con el id::>' + id + " no existe",
+                mensaje: 'El profesor con el id::>' + id + " no existe",
                 errors: { message: 'No exite el usuario con ese ID' }
             });
         }
 
-        usuario.nombre = body.nombre;
-        usuario.email = body.email;
-        usuario.role = body.role;
+        profesor.nombre = body.nombre;
+        profesor.usuario = req.usuario._id;
+        profesor.curso = body.curso;
 
-        usuario.save((err, usuarioGuardado) => {
+        profesor.save((err, profesorGuardado) => {
             if (err) {
                 return res.status(400).json({
                     ok: false,
-                    mensaje: 'Error al Actualizar el  usuario',
+                    mensaje: 'Error al Actualizar el  profesor',
                     errors: err
                 });
             }
-            usuarioGuardado.password = ':)';
+
             res.status(200).json({
                 ok: true,
-                usuario: usuarioGuardado
+                profesor: profesorGuardado
             });
         });
     });
@@ -80,63 +81,56 @@ app.put('/:id', mdAutenticacion.verificaToken, (req, res) => {
 
 });
 
-
-
-
-
-
 //===================================
-//Crear Nuevo Usuario
+//Crear Nuevo Profesor
 //====================================
 app.post('/', mdAutenticacion.verificaToken, (req, res) => {
     var body = req.body;
-    var usuario = new Usuario({
+    var profesor = new Profesor({
         nombre: body.nombre,
-        email: body.email,
-        password: bcrypt.hashSync(body.password, 10),
-        img: body.img,
-        role: body.role
+        usuario: req.usuario._id,
+        curso: body.curso
     });
-    usuario.save((err, usuarioGuardado) => {
+    profesor.save((err, profesorGuardado) => {
         if (err) {
             return res.status(400).json({
                 ok: false,
-                mensaje: 'Error al crear usuario',
+                mensaje: 'Error al profesor usuario',
                 errors: err
             });
         }
         res.status(201).json({
             ok: true,
-            usuario: usuarioGuardado,
-            usuariotoken: req.usuario
+            profesor: profesorGuardado,
+
         });
     });
 
 
 });
 // ===================================
-// Eliminar Usuario
+// Eliminar Profesor por id
 //=======================================
 app.delete('/:id', mdAutenticacion.verificaToken, (req, res) => {
     var id = req.params.id;
-    Usuario.findByIdAndRemove(id, (err, usuarioBorrado) => {
+    Profesor.findByIdAndRemove(id, (err, profesorBorrado) => {
         if (err) {
             return res.status(500).json({
                 ok: false,
-                mensaje: 'Error al borrar el  usuario',
+                mensaje: 'Error al borrar el  profesor',
                 errors: err
             });
         }
-        if (!usuarioBorrado) {
+        if (!profesorBorrado) {
             return res.status(500).json({
                 ok: false,
-                mensaje: 'No existe un usuario con ese id',
-                errors: { message: 'No existe un usario con es ID' }
+                mensaje: 'No existe un profesor con ese id',
+                errors: { message: 'No existe un profesor con es ID' }
             });
         }
         res.status(201).json({
             ok: true,
-            usuario: usuarioBorrado
+            profesor: profesorBorrado
         });
     });
 });
