@@ -33,6 +33,65 @@ app.get('/', (req, res, next) => {
         });
 });
 
+/// ===========================================
+// Inicio Obtener Todos los Cursos
+//==================================
+app.get('/All', (req, res, next) => {
+    Curso.find({})
+        .populate('usuario', 'nombre email')
+        .exec((err, cursos) => {
+
+            if (err) {
+                return res.status(500).json({
+                    ok: false,
+                    mensaje: 'Error Cargando Cursos',
+                    errors: err
+                });
+            }
+            Curso.count({}, (err, conteo) => {
+                res.status(200).json({
+                    ok: true,
+                    cursos: cursos,
+                    total: conteo
+                });
+            });
+        });
+});
+
+
+// ==========================================
+// Obtener Curso por ID
+// ==========================================
+app.get('/:id', (req, res) => {
+    var id = req.params.id;
+    Curso.findById(id)
+        .populate('usuario', 'nombre img email')
+        .exec((err, curso) => {
+            if (err) {
+                return res.status(500).json({
+                    ok: false,
+                    mensaje: 'Error al buscar curso',
+                    errors: err
+                });
+            }
+            if (!curso) {
+                return res.status(400).json({
+                    ok: false,
+                    mensaje: 'El curso con el id ' + id + 'no existe ',
+                    errors: {
+                        message: 'No existe un curso con ese ID '
+                    }
+                });
+            }
+            res.status(200).json({
+                ok: true,
+                curso: curso
+            });
+        });
+});
+
+
+
 //===========================
 // Actualizar Datos
 //==============================

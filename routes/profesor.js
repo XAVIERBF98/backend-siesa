@@ -33,6 +33,36 @@ app.get('/', (req, res, next) => {
             });
         });
 });
+//===========================
+// Obtener  Profesor
+//==============================
+app.get('/:id', (req, res) => {
+    var id = req.params.id;
+    Profesor.findById(id)
+        .populate('usuario', 'nombre email img')
+        .populate('curso')
+        .exec((err, profesor) => {
+            if (err) {
+                return res.status(500).json({
+                    ok: false,
+                    mensaje: 'Error al Buscar profesor',
+                    errors: err
+                });
+            }
+            if (!profesor) {
+                return res.status(400).json({
+                    ok: false,
+                    mensaje: 'El profesor con el id::>' + id + " no existe",
+                    errors: { message: 'No exite el usuario con ese ID' }
+                });
+            }
+            res.status(200).json({
+                ok: true,
+                profesor: profesor
+            })
+
+        });
+});
 
 //===========================
 // Actualizar Datos

@@ -13,6 +13,7 @@ var usuarioShema = new Schema({
     password: { type: String, required: [true, 'La contraseña es necesario'] },
     img: { type: String, required: false },
     role: { type: String, required: false, default: 'USER_ROLE', enum: roleValidos },
+    google: { type: Boolean, default: false }
 });
 
 usuarioShema.plugin(uniqueValidator, { message: '{PATH} debe ser Unico' });

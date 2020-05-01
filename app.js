@@ -3,7 +3,23 @@ var express = require('express');
 var mongose = require('mongoose');
 var bodyparser = require('body-parser');
 //Inicializar Variables
+var cors = require('cors');
 var app = express();
+
+app.use(cors());
+
+app.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "*"); // update to match the domain you will make the request from
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+    res.header("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS");
+    if (req.method === 'OPTIONS') {
+        res.header("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS");
+        return res.status(200).json({});
+    }
+    next();
+
+});
+
 
 //Body Parser
 //parse aplicacion  /x--www-form -urlecoded
