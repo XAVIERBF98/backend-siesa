@@ -70,7 +70,7 @@ app.get('/todo/:busquedad', (req, res, next) => {
 function busquedadCurso(busquedad, regex) {
     return new Promise((resolve, reject) => {
         Curso.find({ nombre: regex })
-            .populate('usuario', 'nombre email')
+            .populate('usuario', 'nombre email img')
             .exec((err, cursos) => {
                 if (err) {
                     reject('Error al cargar Cursos', err);
@@ -84,7 +84,7 @@ function busquedadCurso(busquedad, regex) {
 function busquedadProfesor(busquedad, regex) {
     return new Promise((resolve, reject) => {
         Profesor.find({ nombre: regex })
-            .populate('usuario', 'nombre email')
+            .populate('usuario', 'nombre email img')
             .populate('cursos')
             .exec((err, profesores) => {
                 if (err) {
@@ -98,7 +98,7 @@ function busquedadProfesor(busquedad, regex) {
 
 function busquedadUsuario(busquedad, regex) {
     return new Promise((resolve, reject) => {
-        Usuario.find({}, 'nombre email role')
+        Usuario.find({}, 'nombre email role img')
             .or([{ 'nombre': regex }, { 'email': regex }])
             .exec((err, usuarios) => {
                 if (err) {

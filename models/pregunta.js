@@ -4,13 +4,13 @@ const mongoose = require('mongoose');
 //creating object 
 const Schema = mongoose.Schema;
 
-const preguntaSchema = new Schema({
-    question: { type: String, require: true },
-    optionA: { type: String, require: true },
-    optionB: { type: String, require: true },
-    optionC: { type: String, require: true },
-    optionD: { type: String, require: true },
-    answer: { type: Number, require: true }
+const PreguntaSchema = new Schema({
+    question: { type: String },
+    optionA: { type: String },
+    optionB: { type: String },
+    optionC: { type: String },
+    optionD: { type: String },
+    answer: { type: Number }
 });
 
-module.exports = mongoose.model('Pregunta', preguntaSchema);
+module.exports = mongoose.model('Pregunta', PreguntaSchema);

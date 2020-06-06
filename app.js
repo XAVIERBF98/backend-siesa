@@ -31,6 +31,8 @@ var appRoutes = require('./routes/app');
 var usuarioRoutes = require('./routes/usuario');
 var loginRoutes = require('./routes/login');
 var cursoRoutes = require('./routes/cursos');
+var quizRoutes = require('./routes/quiz');
+var preguntaRoutes = require('./routes/preguntas');
 var profesorRoutes = require('./routes/profesor');
 var busquedadRoutes = require('./routes/busqueda');
 var uploadRoutes = require('./routes/upload');
@@ -50,6 +52,8 @@ mongose.connection.openUri('mongodb://localhost:27017/siesaDB', (err, res) => {
 
 app.use('/usuario', usuarioRoutes);
 app.use('/curso', cursoRoutes);
+app.use('/quiz', quizRoutes);
+app.use('/pregunta', preguntaRoutes);
 app.use('/profesor', profesorRoutes);
 app.use('/login', loginRoutes);
 app.use('/busqueda', busquedadRoutes);
