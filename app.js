@@ -2,6 +2,11 @@
 var express = require('express');
 var mongose = require('mongoose');
 var bodyparser = require('body-parser');
+const {dbConection} = require('./database/config');
+
+
+//Base de Datos
+dbConection();
 //Inicializar Variables
 var cors = require('cors');
 var app = express();
@@ -38,10 +43,6 @@ var busquedadRoutes = require('./routes/busqueda');
 var uploadRoutes = require('./routes/upload');
 var imgRoutes = require('./routes/img');
 
-mongose.connection.openUri('mongodb+srv://Xavier:3107635251@cluster0.ladrt.gcp.mongodb.net/<dbname>?retryWrites=true&w=majority', (err, res) => {
-    if (err) throw err;
-    console.log('Base de Datos: \x1b[31m%s\x1b[0m', 'online');
-});
 
 ///Server Index Congig
 //var serveIndex = require('serve-index');
