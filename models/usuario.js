@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 var uniqueValidator = require('mongoose-unique-validator');
+const curso = require('./curso');
 var Schema = mongoose.Schema;
 
 var roleValidos = {
@@ -13,7 +14,8 @@ var usuarioShema = new Schema({
     password: { type: String, required: [true, 'La contraseña es necesario'] },
     img: { type: String, required: false },
     role: { type: String, required: false, default: 'USER_ROLE', enum: roleValidos },
-    google: { type: Boolean, default: false }
+    google: { type: Boolean, default: false },
+    cursos:[{type:Schema.Types.ObjectId,ref:curso}]
 });
 
 usuarioShema.plugin(uniqueValidator, { message: '{PATH} debe ser Unico' });
